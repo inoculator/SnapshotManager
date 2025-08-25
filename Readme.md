@@ -33,7 +33,7 @@ There is one gap if it comes to RAW disks. Actually ```virsh``` is not capable o
 You have to switch to a "disk-only" mode, where removal or reverting of snapshots gets a little delight.
 I have spared out this for now, but will try to solve it in future steps.
 
-Also not included it a "revert to snapshot". This should always be done manual and not fully automated.
+Also not included is a "revert to snapshot". This should always be done manual and not fully automated.
 
 ## Setup  
 
