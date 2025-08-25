@@ -62,6 +62,7 @@ pipeline {
                     pwsh '''
                         $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
+                        . ${env:WORKSPACE}/functions/get-virtualmachine.ps1
                         $Arguments = @{}
                         if ($env:VMS) {$Arguments["VirtualMachineNames"] = $env:VMS}
                         if ($env:verbose -eq "Yes") {$Arguments["verbose"] = $true}
