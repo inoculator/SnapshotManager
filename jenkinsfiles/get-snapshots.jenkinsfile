@@ -1,5 +1,10 @@
 pipeline {
     agent {label "DERDAPP006"}
+    options {
+        durabilityHint 'MAX_SURVIVABILITY'
+        disableConcurrentBuilds()
+        disableResume()
+    }
     stages {
         stage ('getsnapshots') {
             steps {
