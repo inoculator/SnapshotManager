@@ -11,7 +11,10 @@ pipeline {
                 script {
                     pwsh '''
                         . ${env:WORKSPACE}/functions/get-snapshots.ps1
-                        get-snapshots -verbose
+                        write-host "Start.....`n"
+                        $result=get-snapshots -verbose
+                        $result|out-string
+                        write-host "....End"
                     '''
                 }
             }
