@@ -8,7 +8,7 @@ Do not use in production environments without peer review and excessive testing.
 
 ## prologue
 
-This code comes from a very indivitualistique environment. As someone who is working with Powershell on a daily base,  
+This code comes from a very individualistic environment. As someone who is working with Powershell on a daily base,  
 I wanted to step forward on my private Linux environment, switching from BASH to PWSH.  
 Most of the regular maintenance I try to automate using Jenkins, while the infrastructure is based on QEMU as hypervisor.
 
