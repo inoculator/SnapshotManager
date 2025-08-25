@@ -5,9 +5,9 @@ function new-snapshot {
     .Parameter VirtualMachineNames
             alias: vms
             A SearchPattern to filter machines
-            if empty all machines will be returned
+            if empty all machines will be addressed
     .PARAMETER SnapshotName
-        a string value containgin a name for the snapshot
+        a string value containing a name for the snapshot
         if empty a generic name is generated
     .PARAMETER clean [switch]
         if true all previous snapshots will be removed first
