@@ -11,6 +11,8 @@ pipeline {
                 script {
                     pwsh '''
                         . ${env:WORKSPACE}/functions/new-snapshot.ps1
+                        . ${env:WORKSPACE}/functions/remove-snapshot.ps1
+                        . ${env:WORKSPACE}/functions/get-snapshot.ps1
                         write-host "Start.....`n"
                         $result=new-snapshot -clean -verbose
                         $result|out-string
