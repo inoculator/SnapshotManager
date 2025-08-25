@@ -1,0 +1,15 @@
+pipeline {
+    agent {label "DERDAPP006"}
+    stages {
+        stage ('getsnapshots') {
+            steps {
+                script {
+                    pwsh ```
+                        . ${env:WORKSPACE}/functions/get-snapshot.ps1
+                        get-snapshot
+                    ```
+                }
+            }
+        }
+    }
+}
