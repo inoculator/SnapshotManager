@@ -37,6 +37,28 @@ pipeline {
                             ],
                             [$class: 'ChoiceParameter', 
                                 choiceType: 'PT_RADIO', 
+                                description: 'Verbose output', 
+                                filterLength: 1, 
+                                filterable: false, 
+                                name: 'verbose', 
+                                script: [
+                                    $class: 'GroovyScript', 
+                                    fallbackScript: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['ERROR: Could not get Verbose']"
+                                    ], 
+                                    script: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['YES','NO:selected']"
+                                    ]
+                                ]
+                            ], 
+                            [$class: 'ChoiceParameter', 
+                                choiceType: 'PT_RADIO', 
                                 description: 'Execute me', 
                                 filterLength: 1, 
                                 filterable: false, 
@@ -65,11 +87,13 @@ pipeline {
                         . ${env:WORKSPACE}/functions/new-snapshot.ps1
                         . ${env:WORKSPACE}/functions/remove-snapshot.ps1
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
-                        if ( $env:RUNMODE -eq "YES" ) {$Clean = $true} else {$Clean = $False}
-                        $env:snapshotname = $env:snapshotname.trim()
-                        $env:VMS = $env:VMS.trim()
+                        $Arguments = @{}
+                        if ( $env:RUNMODE -eq "YES" ) {$Arguments["clean"] = $true
+                        if ($env:VMS) {$Arguments["VirtualMachineNames"] = $env:VMS
+                        if ($env:verbose -eq "Yes") {$Arguments["verbose"] = $true
+                        if ($env:snapshotname) { $argumentlist["SnapshotName"] = $env:snapshotname
                         write-host "Start.....`n"
-                        $result=new-snapshot -VirtualMachineName $env:VMS -Snapshotname $env:snapshotname -clean:$Clean -verbose
+                        $result=new-snapshot @arguments
                         $result|out-string
                         write-host "....End"
                     '''

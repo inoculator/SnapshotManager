@@ -14,6 +14,28 @@ pipeline {
                             string(description: 'VirtualMachineName', defaultValue: '', name: 'VMS', trim: true),
                             [$class: 'ChoiceParameter', 
                                 choiceType: 'PT_RADIO', 
+                                description: 'Verbose output', 
+                                filterLength: 1, 
+                                filterable: false, 
+                                name: 'verbose', 
+                                script: [
+                                    $class: 'GroovyScript', 
+                                    fallbackScript: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['ERROR: Could not get EXECUTEME']"
+                                    ], 
+                                    script: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['YES','NO:selected']"
+                                    ]
+                                ]
+                            ],                            
+                            [$class: 'ChoiceParameter', 
+                                choiceType: 'PT_RADIO', 
                                 description: 'Execute me', 
                                 filterLength: 1, 
                                 filterable: false, 
@@ -40,9 +62,11 @@ pipeline {
                     pwsh '''
                         $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
-                        #$env:VMS = $env:VMS.trim()
+                        $Arguments = @{}
+                        if ($env:VMS) {$Arguments["VirtualMachineNames"] = $env:VMS
+                        if ($env:verbose -eq "Yes") {$Arguments["verbose"] = $true
                         write-host "Start.....`n"
-                        $result=get-snapshot -VirtualMachineName $env:VMS -verbose
+                        $result=get-snapshot @Arguments
                         $result|out-string
                         write-host "....End"
                     '''
