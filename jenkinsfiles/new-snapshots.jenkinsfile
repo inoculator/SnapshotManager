@@ -9,16 +9,70 @@ pipeline {
         stage ('getsnapshots') {
             steps {
                 script {
+                    properties([
+                        parameters([
+                            string(description: 'VirtualMachineName', defaultValue: '', name: 'VMS', trim: true),
+                            [$class: 'ChoiceParameter', 
+                                choiceType: 'PT_RADIO', 
+                                description: 'Cleanup old snapshots', 
+                                filterLength: 1, 
+                                filterable: false, 
+                                name: 'RUNMODE', 
+                                script: [
+                                    $class: 'GroovyScript', 
+                                    fallbackScript: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['ERROR: Could not get RunMode']"
+                                    ], 
+                                    script: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['Yes:selected','No']"
+                                    ]
+                                ]
+                            ],
+                            [$class: 'ChoiceParameter', 
+                                choiceType: 'PT_RADIO', 
+                                description: 'Execute me', 
+                                filterLength: 1, 
+                                filterable: false, 
+                                name: 'EXECUTEME', 
+                                script: [
+                                    $class: 'GroovyScript', 
+                                    fallbackScript: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['ERROR: Could not get EXECUTEME']"
+                                    ], 
+                                    script: [
+                                    classpath: [], 
+                                    sandbox: true, 
+                                    script: 
+                                        "return['YES','NO:selected']"
+                                    ]
+                                ]
+                            ]                            
+                        ])
+                    ])
+                    if (EXECUTEME == "YES") {
                     pwsh '''
                         $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/new-snapshot.ps1
                         . ${env:WORKSPACE}/functions/remove-snapshot.ps1
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
+                        if ( $env:RUNMODE -eq "YES" ) {$Clean = $true} else {$Clean = $False}
                         write-host "Start.....`n"
-                        $result=new-snapshot -clean -verbose
+                        $result=new-snapshot $env:VMS -clean:$Clean -verbose
                         $result|out-string
                         write-host "....End"
                     '''
+                    } else {
+                        println "Execute Flag not set. Done Nothing."
+                    }
                 }
             }
         }
