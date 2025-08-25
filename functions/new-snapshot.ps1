@@ -27,22 +27,13 @@ function new-snapshot {
         [switch]$clean
     )
 
-    ## load all existing vms
-    [array]$VMList = @()
-    foreach ($vm in $(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)) {
-        $VMList += [PSCustomObject]@{
-            VirtualMachineName = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1]
-            VirtualMachineStatus = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[2]
-        }
-    }
     ## filter requested
-    $VMList = $VMList|where-object {$VirtualMachineNames -contains $_.VirtualMachineName}
+    $VMList = get-virtualmachine -SearchPattern $VirtualMachineNames
     
     $ReturnArray = @()
     if ($VMList.count -gt 0 ) {
         foreach ( $vm in $VMList) {
             write-verbose "Processing $($vm.VirtualMachineName)"
-
             
             ## enumerate machine disks
             $DiskArray= @()
