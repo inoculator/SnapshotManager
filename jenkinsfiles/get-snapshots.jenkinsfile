@@ -11,7 +11,7 @@ pipeline {
                 script {
                     pwsh '''
                         . ${env:WORKSPACE}/functions/get-snapshots.ps1
-                        get-snapshot
+                        get-snapshots
                     '''
                 }
             }
