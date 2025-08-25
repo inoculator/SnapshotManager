@@ -63,8 +63,8 @@ pipeline {
                         $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
                         $Arguments = @{}
-                        if ($env:VMS) {$Arguments["VirtualMachineNames"] = $env:VMS
-                        if ($env:verbose -eq "Yes") {$Arguments["verbose"] = $true
+                        if ($env:VMS) {$Arguments["VirtualMachineNames"] = $env:VMS}
+                        if ($env:verbose -eq "Yes") {$Arguments["verbose"] = $true}
                         write-host "Start.....`n"
                         $result=get-snapshot @Arguments
                         $result|out-string
