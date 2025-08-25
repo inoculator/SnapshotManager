@@ -4,10 +4,10 @@ pipeline {
         stage ('getsnapshots') {
             steps {
                 script {
-                    pwsh ```
+                    pwsh '''
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
                         get-snapshot
-                    ```
+                    '''
                 }
             }
         }
