@@ -19,7 +19,7 @@ function remove-snapshot {
     #>
     [cmdletbinding()]
     param (
-        [ValidateNotNullOrWhiteSpace()][alias("vms")][array]$VirtualMachineNames = ".*",
+        [ValidateNotNullOrWhiteSpace()][alias("vms")][string]$VirtualMachineNames = ".*",
         [string]$SnapShotname = "RemoveAll"        
     )
 

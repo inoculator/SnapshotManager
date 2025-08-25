@@ -2,10 +2,10 @@ function new-snapshot {
     <#
     .Description
         Creates a Snapshot for a each given virtual machine
-    .Parameter VirtualMachineNames (Alias vms)
-        Mandatory
-        an array of machine names
-        if empty all machines will be listed
+    .Parameter VirtualMachineNames
+            alias: vms
+            A SearchPattern to filter machines
+            if empty all machines will be returned
     .PARAMETER SnapshotName
         a string value containgin a name for the snapshot
         if empty a generic name is generated
@@ -22,7 +22,7 @@ function new-snapshot {
 
     [cmdletbinding()]
     param (
-        [alias("vms")][array]$VirtualMachineNames = @($(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] }),
+        [ValidateNotNullOrWhiteSpace()][Alias("vms")][string]$VirtualMachineNames = ".*",
         [ValidateNotNullOrWhiteSpace()][string]$SnapShotname = $("Generic-$(get-date -format "yyyy-MMM-dd-hhmm")"),
         [switch]$clean
     )
@@ -66,9 +66,7 @@ function new-snapshot {
                 Snapshotname = $SnapShotname
                 Status = $Status
             }
-
-            }
-
         }
- return $ReturnArray
+    }
+    return $ReturnArray
 }
