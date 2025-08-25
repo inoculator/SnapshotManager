@@ -9,19 +9,25 @@ function new-snapshot {
     .PARAMETER SnapshotName
         a string value containgin a name for the snapshot
         if empty a generic name is generated
+    .PARAMETER clean [switch]
+        if true all previous snapshots will be removed first
     .OUTPUTS
         an array of given Machines with the status of the operation
     .NOTES
         The given list of machines is validated against existing machines.
+
+        DOES NOT WORK ON MACHINES HAVING RAW DISKS (in progress)
         
     #>
 
+    [cmdletbinding()]
     param (
         [alias("vms")][array]$VirtualMachineNames = @($(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] }),
-        [string]$SnapShotname = $("Generic-$(get-date -format "yyyy-MMM-dd-hhmm")")
+        [string]$SnapShotname = $("Generic-$(get-date -format "yyyy-MMM-dd-hhmm")"),
+        [switch]$clean
     )
 
- ## load all existing vms
+    ## load all existing vms
     [array]$VMList = @()
     foreach ($vm in $(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)) {
         $VMList += [PSCustomObject]@{
@@ -36,10 +42,39 @@ function new-snapshot {
     if ($VMList.count -gt 0 ) {
         foreach ( $vm in $VMList) {
             write-verbose "Processing $($vm.VirtualMachineName)"
-            ## Create new Snapshot for machine
-            $ReturnArray += @($(sudo virsh snapshot-create-as $vm.VirtualMachineName --name $SnapShotname --description "Created By Jenkins Job ${ENV:BUILD_NUMBER}" ))
+
+            
+            ## enumerate machine disks
+            $DiskArray= @()
+            $DiskList = @()
+            $DiskList = @($(sudo virsh domblklist $vm.VirtualMachineName|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries))
+            foreach ($item in $DiskList) {
+                $DiskArray += [PSCustomObject]@{
+                    Target = $DiskList.split(" ",[StringSplitOptions]::removeEmptyEntries)[0]
+                    Source = $DiskList.split(" ",[StringSplitOptions]::removeEmptyEntries)[1]
+                    qcow2 = $DiskList.split(" ",[StringSplitOptions]::removeEmptyEntries)[1] -match "\.qcow2$"
+                }
+            }
+
+            if ( $DiskArray.qcow2 -contains $false ) {
+                $Status = "WARNING: $($vm.VirtualMachineName) has none QCOW2 disks. not processing!"
+            } else {
+                if ($clean) {
+                    ## removing previous snapshots
+                    ## the function returns a compatible array
+                    $ReturnArray += remove-snapshot -VirtualMachineNames $vm.VirtualMachineName
+                }
+                ## Create new Snapshot for machine
+                $Status = @($(sudo virsh snapshot-create-as $vm.VirtualMachineName --name $SnapShotname --description "Created By Jenkins Job ${ENV:BUILD_NUMBER}" ))
+            }
+            $ReturnArray += [PSCustomObject]@{
+                VirtualMachineName = $vm.VirtualMachineName
+                Snapshotname = $SnapShotname
+                Status = $Status
+            }
+
+            }
 
         }
-    }
  return $ReturnArray
 }
