@@ -1,4 +1,4 @@
-function get-snapshots {
+function get-snapshot {
     <#
     .Description
         Loads all machines and scans for existing snapshots
@@ -28,6 +28,7 @@ function get-snapshots {
             VirtualMachineStatus = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[2]
         }
     }
+    ## filter requested
     $VMList = $VMList|where-object {$VirtualMachineNames -contains $_.VirtualMachineName}
 
     $ReturnArray = @()

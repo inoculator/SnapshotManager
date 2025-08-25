@@ -10,9 +10,9 @@ pipeline {
             steps {
                 script {
                     pwsh '''
-                        . ${env:WORKSPACE}/functions/get-snapshot.ps1
+                        . ${env:WORKSPACE}/functions/new-snapshot.ps1
                         write-host "Start.....`n"
-                        $result=get-snapshot -verbose
+                        $result=new-snapshot -verbose
                         $result|out-string
                         write-host "....End"
                     '''
