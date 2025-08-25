@@ -62,12 +62,12 @@ function new-snapshot {
                 if ($clean) {
                     ## removing previous snapshots
                     ## the function returns a compatible array
-                    write-verbose "Start cleaning old snapshots on $($vm.VirtualMachineName)"
+                    write-verbose "NEW-SNAPSHOT: Start cleaning old snapshots on $($vm.VirtualMachineName)"
                     $ReturnArray += remove-snapshot -VirtualMachineNames $vm.VirtualMachineName
-                    write-verbose "Finished cleaning old snapshots on $($vm.VirtualMachineName)"
+                    write-verbose "NEW-SNAPSHOT: Finished cleaning old snapshots on $($vm.VirtualMachineName)"
                 }
                 ## Create new Snapshot for machine
-                write-verbose "Sending request to create new Snapshot '$SnapShotname' on $($vm.VirtualMachineName)"
+                write-verbose "NEW-SNAPSHOT: Sending request to create new Snapshot '$SnapShotname' on $($vm.VirtualMachineName)"
                 $Status = @($(sudo virsh snapshot-create-as $vm.VirtualMachineName --name $SnapShotname --description "Created By Jenkins Job ${ENV:BUILD_NUMBER}" ))
             }
             $ReturnArray += [PSCustomObject]@{
