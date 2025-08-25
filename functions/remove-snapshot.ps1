@@ -20,7 +20,7 @@ function remove-snapshot {
     [cmdletbinding()]
     param (
         [ValidateNotNullOrWhiteSpace()][alias("vms")][string]$VirtualMachineNames = ".*",
-        [string]$SnapShotname = "RemoveAll"        
+        [string]$SnapShotname = ".*"        
     )
 
     ## filter requested
@@ -33,7 +33,7 @@ function remove-snapshot {
             $GetSnapshotResult = get-snapshot -VirtualMachineNames $vm.VirtualMachineName
             if ($GetSnapshotResult.SnapShotList.count -gt 0) {
                 foreach ($Snapshot in $GetSnapshotResult.SnapShotList) {
-                    if ($SnapShotname -eq "RemoveAll" -or $Snapshot.Name -match $SnapShotname) {
+                    if ($Snapshot.Name -match $SnapShotname) {
                         if ($Snapshot.status -eq "disk-snapshot") {
                             ## will not handle disk-only snaps
                             $Status = "Disk-only not removable!"
