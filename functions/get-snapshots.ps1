@@ -17,12 +17,12 @@ function get-snapshots {
     #>
     [cmdletbinding()]
     param (
-        [Alias("vms")][array]$VirtualMachineNames = @($(virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] })
+        [Alias("vms")][array]$VirtualMachineNames = @($(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] })
     )
 
     ## load all existing vms
     [array]$VMList = @()
-    foreach ($vm in $(virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)) {
+    foreach ($vm in $(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)) {
         $VMList += [PSCustomObject]@{
             VirtualMachineName = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1]
             VirtualMachineStatus = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[2]
@@ -35,7 +35,7 @@ function get-snapshots {
         foreach ( $vm in $VMList) {
             write-verbose "Processing $($vm.VirtualMachineName)"
             ## loading snapshots for each vm
-            [array]$SnapShotList = @($(virsh snapshot-list $($vm.VirtualMachineName)|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries))
+            [array]$SnapShotList = @($(sudo virsh snapshot-list $($vm.VirtualMachineName)|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries))
             ## converting each entry to a named array
             $SnapShotArray = @()
             write-verbose "Found $($SnapshotList.count) Snapshots"
