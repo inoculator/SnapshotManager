@@ -91,7 +91,7 @@ pipeline {
                         if ( $env:RUNMODE -eq "YES" ) {$Arguments["clean"] = $true}
                         if ($env:VMS) {$Arguments["VirtualMachineNames"] = $env:VMS}
                         if ($env:verbose -eq "Yes") {$Arguments["verbose"] = $true}
-                        if ($env:snapshotname) { $argumentlist["SnapshotName"] = $env:snapshotname}
+                        if ($env:snapshotname) { $arguments["SnapshotName"] = $env:snapshotname}
                         write-host "Start.....`n"
                         $result=new-snapshot @arguments
                         $result|out-string
