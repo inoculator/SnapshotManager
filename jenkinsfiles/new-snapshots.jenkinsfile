@@ -12,7 +12,7 @@ pipeline {
                     pwsh '''
                         . ${env:WORKSPACE}/functions/new-snapshot.ps1
                         write-host "Start.....`n"
-                        $result=new-snapshot -verbose
+                        $result=new-snapshot -clean -verbose
                         $result|out-string
                         write-host "....End"
                     '''

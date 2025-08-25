@@ -46,6 +46,7 @@ function remove-snapshot {
                             $Status = "Disk-only not removable!"
 
                         } else {
+                            write-verbose "Sending delete request for $($Snapshot.Name) to $($vm.VirtualMachineName)"
                             $Status = @($(sudo virsh snapshot-delete $vm.VirtualMachineName --snapshotname $Snapshot.Name))
                         }
                         $ReturnArray += [PSCustomObject]@{
