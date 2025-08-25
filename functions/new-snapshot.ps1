@@ -23,7 +23,7 @@ function new-snapshot {
     [cmdletbinding()]
     param (
         [alias("vms")][array]$VirtualMachineNames = @($(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] }),
-        [string]$SnapShotname = $("Generic-$(get-date -format "yyyy-MMM-dd-hhmm")"),
+        [ValidateNotNullOrWhiteSpace()][string]$SnapShotname = $("Generic-$(get-date -format "yyyy-MMM-dd-hhmm")"),
         [switch]$clean
     )
 

@@ -12,6 +12,7 @@ pipeline {
                     properties([
                         parameters([
                             string(description: 'VirtualMachineName', defaultValue: '', name: 'VMS', trim: true),
+                            string(description: 'Snapshot Name', defaultValue: '', name: 'snapshotname', trim: true),
                             [$class: 'ChoiceParameter', 
                                 choiceType: 'PT_RADIO', 
                                 description: 'Cleanup old snapshots', 
@@ -65,8 +66,10 @@ pipeline {
                         . ${env:WORKSPACE}/functions/remove-snapshot.ps1
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
                         if ( $env:RUNMODE -eq "YES" ) {$Clean = $true} else {$Clean = $False}
+                        $env:snapshotname = $env:snapshotname.trim()
+                        $env:VMS = $env:VMS.trim()
                         write-host "Start.....`n"
-                        $result=new-snapshot $env:VMS -clean:$Clean -verbose
+                        $result=new-snapshot -VirtualMachineName $env:VMS -Snapshotname $env:snapshotname -clean:$Clean -verbose
                         $result|out-string
                         write-host "....End"
                     '''

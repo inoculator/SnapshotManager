@@ -62,8 +62,9 @@ pipeline {
                     pwsh '''
                         $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
+                        $env:VMS = $env:VMS.trim()
                         write-host "Start.....`n"
-                        $result=get-snapshot -verbose
+                        $result=get-snapshot -VirtualMachineName $env:VMS -verbose
                         $result|out-string
                         write-host "....End"
                     '''
