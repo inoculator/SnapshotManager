@@ -36,7 +36,7 @@ function remove-snapshot {
     $ReturnArray = @()
     if ($VMList.count -gt 0 ) {
         foreach ( $vm in $VMList) {
-            write-verbose "Processing $($vm.VirtualMachineName)"
+            write-verbose "REMOVE-SNAPSHOT: Processing $($vm.VirtualMachineName)"
             $GetSnapshotResult = get-snapshot -VirtualMachineNames $vm.VirtualMachineName
             if ($GetSnapshotResult.SnapShotList.count -gt 0) {
                 foreach ($Snapshot in $GetSnapshotResult.SnapShotList) {
@@ -46,7 +46,7 @@ function remove-snapshot {
                             $Status = "Disk-only not removable!"
 
                         } else {
-                            write-verbose "Sending delete request for $($Snapshot.Name) to $($vm.VirtualMachineName)"
+                            write-verbose "REMOVE-SNAPSHOT: Sending delete request for $($Snapshot.Name) to $($vm.VirtualMachineName)"
                             $Status = @($(sudo virsh snapshot-delete $vm.VirtualMachineName --snapshotname $Snapshot.Name))
                         }
                         $ReturnArray += [PSCustomObject]@{

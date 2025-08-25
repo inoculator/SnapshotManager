@@ -10,6 +10,7 @@ pipeline {
             steps {
                 script {
                     pwsh '''
+                        $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1
                         write-host "Start.....`n"
                         $result=get-snapshot -verbose

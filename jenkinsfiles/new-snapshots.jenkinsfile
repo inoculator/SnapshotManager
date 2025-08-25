@@ -10,6 +10,7 @@ pipeline {
             steps {
                 script {
                     pwsh '''
+                        $PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText;
                         . ${env:WORKSPACE}/functions/new-snapshot.ps1
                         . ${env:WORKSPACE}/functions/remove-snapshot.ps1
                         . ${env:WORKSPACE}/functions/get-snapshot.ps1

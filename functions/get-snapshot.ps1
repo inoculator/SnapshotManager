@@ -34,14 +34,14 @@ function get-snapshot {
     $ReturnArray = @()
     if ($VMList.count -gt 0 ) {
         foreach ( $vm in $VMList) {
-            write-verbose "Processing $($vm.VirtualMachineName)"
+            write-verbose "GET-SNAPSHOT: Processing $($vm.VirtualMachineName)"
             ## loading snapshots for each vm
             [array]$SnapShotList = @($(sudo virsh snapshot-list $($vm.VirtualMachineName)|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries))
             ## converting each entry to a named array
             $SnapShotArray = @()
             write-verbose "Found $($SnapshotList.count) Snapshots"
             foreach ($SnapShot in $SnapShotList) {
-                write-verbose "processing $snapshot"
+                write-verbose "GET-SNAPSHOT: processing $snapshot"
                 $SnapShotArray += [PSCustomObject]@{
                     Name = $SnapShot.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[0]
                     Date = $SnapShot.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1,2,3] -join " "|get-date
