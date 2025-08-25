@@ -1,4 +1,24 @@
 pipeline {
+   /*
+    .Description
+        jenkins file to provide the pipeline to create snapshots
+    .Parameter VirtualMachineName (VMS)
+        A SearchPattern to filter machines
+        if empty all machines will be addressed
+    .Parameter Snapshot Name (snapshotname)
+        A text string to name the new snapshot
+        if empty a generic name will be generated
+    .Parameter Cleanup old snapshots (RUNMODE)
+        A flag to enable removal of old snapshots before creating new ones
+        Attention: ALL snapshots will be removed if multiple exist
+    .Parameter Verbose output (verbose)
+        activates verbose output during processing
+    .Parameter Execute me (EXECUTEME)
+        a securitiy flag to prevent accidental execution
+        can also be used to load changes in the jenkinsfile after push
+    .OUTPUT
+        All output is parsed to the Jenkins Log / Output as plain text       
+    */
     agent {label "DERDAPP006"}
     options {
         durabilityHint 'MAX_SURVIVABILITY'
