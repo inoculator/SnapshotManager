@@ -39,7 +39,7 @@ function get-snapshot {
             [array]$SnapShotList = @($(sudo virsh snapshot-list $($vm.VirtualMachineName)|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries))
             ## converting each entry to a named array
             $SnapShotArray = @()
-            write-verbose "Found $($SnapshotList.count) Snapshots"
+            write-verbose "GET-SNAPSHOT: Found $($SnapshotList.count) Snapshots"
             foreach ($SnapShot in $SnapShotList) {
                 write-verbose "GET-SNAPSHOT: processing $snapshot"
                 $SnapShotArray += [PSCustomObject]@{
