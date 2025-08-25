@@ -20,7 +20,7 @@ function remove-snapshot {
     [cmdletbinding()]
     param (
         [ValidateNotNullOrWhiteSpace()][alias("vms")][string]$VirtualMachineNames = ".*",
-        [string]$SnapShotname = ".*"        
+        [ValidateNotNullOrWhiteSpace()][string]$SnapShotname = ".*"        
     )
 
     ## filter requested
