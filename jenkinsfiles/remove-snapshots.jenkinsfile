@@ -1,4 +1,21 @@
 pipeline {
+       /*
+    .Description
+        jenkins file to provide the pipeline to remove snapshots
+    .Parameter VirtualMachineName (VMS)
+        A SearchPattern to filter machines
+        if empty all machines will be addressed
+    .Parameter Snapshot Name (snapshotname)
+        A SearchPattern to select snapshots for removal
+        if empty all snapshots will be removed
+    .Parameter Verbose output (verbose)
+        activates verbose output during processing
+    .Parameter Execute me (EXECUTEME)
+        a securitiy flag to prevent accidental execution
+        can also be used to load changes in the jenkinsfile after push
+    .OUTPUT
+        All output is parsed to the Jenkins Log / Output as plain text       
+    */
     agent {label "DERDAPP006"}
     options {
         durabilityHint 'MAX_SURVIVABILITY'

@@ -1,4 +1,18 @@
 pipeline {
+    /*
+    .Description
+        jenkins file to provide the pipeline to read snapshots
+    .Parameter VirtualMachineName (VMS)
+        A SearchPattern to filter machines
+        if empty all machines will be returned
+    .Parameter Verbose output (verbose)
+        activates verbose output during processing
+    .Parameter Execute me (EXECUTEME)
+        a securitiy flag to prevent accidental execution
+        can also be used to load changes in the jenkinsfile after push
+    .OUTPUT
+        All output is parsed to the Jenkins Log / Output as plain text       
+    */
     agent {label "DERDAPP006"}
     options {
         durabilityHint 'MAX_SURVIVABILITY'
@@ -24,7 +38,7 @@ pipeline {
                                     classpath: [], 
                                     sandbox: true, 
                                     script: 
-                                        "return['ERROR: Could not get EXECUTEME']"
+                                        "return['ERROR: Could not get Verbose']"
                                     ], 
                                     script: [
                                     classpath: [], 
