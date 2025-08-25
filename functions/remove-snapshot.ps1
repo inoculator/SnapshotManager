@@ -3,8 +3,9 @@ function remove-snapshot {
         .DESCRIPTION
             removes a snapshot by a given list of machines and a snapshot name
         .PARAMETER VirtualMachineList
-            an array of virtual machine names (aka domains)
-            if no machine name is given, all machines are target
+            alias: vms
+            A SearchPattern to filter machines
+            if empty all machines will be returned
         .PARAMETER SnapshotName
             a name of the snapshot to remove (can be a regular expression)
             if no snapshot is given, all snapshots are target
@@ -18,20 +19,12 @@ function remove-snapshot {
     #>
     [cmdletbinding()]
     param (
-        [alias("vms")][array]$VirtualMachineNames = @($(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] }),
+        [ValidateNotNullOrWhiteSpace()][alias("vms")][array]$VirtualMachineNames = ".*",
         [string]$SnapShotname = "RemoveAll"        
     )
 
-     ## load all existing vms
-    [array]$VMList = @()
-    foreach ($vm in $(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)) {
-        $VMList += [PSCustomObject]@{
-            VirtualMachineName = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1]
-            VirtualMachineStatus = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[2]
-        }
-    }
     ## filter requested
-    $VMList = $VMList|where-object {$VirtualMachineNames -contains $_.VirtualMachineName}
+    $VMList = get-virtualmachine -SearchPattern $VirtualMachineNames
 
     $ReturnArray = @()
     if ($VMList.count -gt 0 ) {

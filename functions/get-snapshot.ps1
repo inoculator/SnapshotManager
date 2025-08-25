@@ -6,7 +6,7 @@ function get-snapshot {
         an array of machines with snapshots and status
     .PARAMETER VirtualMachineNames
         alias: vms
-        and array of virtual machine names
+        A SearchPattern to filter machines
         if empty all machines will be listed
     
     .NOTES
@@ -17,19 +17,12 @@ function get-snapshot {
     #>
     [cmdletbinding()]
     param (
-        [ValidateNotNullOrWhiteSpace()][Alias("vms")][array]$VirtualMachineNames = @($(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)|foreach-object { $_.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1] })
+        [ValidateNotNullOrWhiteSpace()][Alias("vms")][string]$VirtualMachineNames = ".*"
     )
 
-    ## load all existing vms
-    [array]$VMList = @()
-    foreach ($vm in $(sudo virsh list --all|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries)) {
-        $VMList += [PSCustomObject]@{
-            VirtualMachineName = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1]
-            VirtualMachineStatus = $vm.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[2]
-        }
-    }
+
     ## filter requested
-    $VMList = $VMList|where-object {$VirtualMachineNames -contains $_.VirtualMachineName}
+    $VMList = get-virtualmachine -SearchPattern $VirtualMachineNames
 
     $ReturnArray = @()
     if ($VMList.count -gt 0 ) {
