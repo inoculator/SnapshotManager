@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     pwsh '''
-                        . ${env:WORKSPACE}/functions/get-snapshot.ps1
+                        . ${env:WORKSPACE}/functions/get-snapshots.ps1
                         get-snapshot
                     '''
                 }
