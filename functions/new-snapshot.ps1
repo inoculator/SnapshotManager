@@ -41,9 +41,9 @@ function new-snapshot {
             $DiskList = @($(sudo virsh domblklist $vm.VirtualMachineName|select-object -skip 2).split([system.Environment]::NewLine,[StringSplitOptions]::removeEmptyEntries))
             foreach ($item in $DiskList) {
                 $DiskArray += [PSCustomObject]@{
-                    Target = $DiskList.split(" ",[StringSplitOptions]::removeEmptyEntries)[0]
-                    Source = $DiskList.split(" ",[StringSplitOptions]::removeEmptyEntries)[1]
-                    qcow2 = $DiskList.split(" ",[StringSplitOptions]::removeEmptyEntries)[1] -match "\.qcow2$"
+                    Target = $item.split(" ",[StringSplitOptions]::removeEmptyEntries)[0]
+                    Source = $item.split(" ",[StringSplitOptions]::removeEmptyEntries)[1]
+                    qcow2 = $item.split(" ",[StringSplitOptions]::removeEmptyEntries)[1] -match "\.qcow2$"
                 }
             }
 
