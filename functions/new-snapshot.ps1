@@ -34,6 +34,9 @@ function new-snapshot {
     if ($VMList.count -gt 0 ) {
         foreach ( $vm in $VMList) {
             write-verbose "Processing $($vm.VirtualMachineName)"
+
+            ## copy snapshot name to internal loop process
+            $thisSnapShotName = $SnapShotname
             
             ## enumerate machine disks
             $DiskArray= @()
@@ -49,6 +52,8 @@ function new-snapshot {
 
             if ( $DiskArray.qcow2 -contains $false ) {
                 $Status = "WARNING: $($vm.VirtualMachineName) has none QCOW2 disks. not processing!"
+                $thisSnapShotName = "N/A"
+
             } else {
                 if ($clean) {
                     ## removing previous snapshots
@@ -63,7 +68,7 @@ function new-snapshot {
             }
             $ReturnArray += [PSCustomObject]@{
                 VirtualMachineName = $vm.VirtualMachineName
-                Snapshotname = $SnapShotname
+                Snapshotname = $thisSnapShotName
                 Status = $Status
             }
         }
